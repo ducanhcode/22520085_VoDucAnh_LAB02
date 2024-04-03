@@ -28,18 +28,18 @@ namespace _22520085_VoDucAnh
                 long fileSize = new FileInfo(name).Length;
                 string fileUrl = openFileDialog.FileName.ToString();
                 string fileContent = File.ReadAllText(name);
-            ///
+            // Gán tên, kích thước, đường dẫn
                 filename.Text = name;
                 size.Text = fileSize.ToString() + " bytes";
                 url.Text = fileUrl;
-            ///    
-                int lineCount = fileContent.Split('\n').Length;
-                int wordCount = fileContent.Split('\n',' ').Length;
+            //    
+                int lineCount = fileContent.Split('\n').Length;// split bằng dấu xuống hàng
+                int wordCount = fileContent.Split('\n',' ').Length;// splt bằng dấu cách hoặc xuống hàng
                 int characterCount = fileContent.Length;
            
                 linecount.Text = lineCount.ToString();
                 wordscount.Text = wordCount.ToString();
-                charactercount.Text = characterCount.ToString();
+                charactercount.Text = characterCount.ToString();//đếm số kí tự
                 richTextBox1.Text = fileContent;
             
         }

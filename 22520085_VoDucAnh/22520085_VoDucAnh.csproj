@@ -158,7 +158,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Student.cs" />
     <EmbeddedResource Include="LAB02.resx">
       <DependentUpon>LAB02.cs</DependentUpon>
     </EmbeddedResource>

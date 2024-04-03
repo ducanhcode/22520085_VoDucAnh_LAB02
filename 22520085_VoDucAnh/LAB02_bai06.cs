@@ -30,6 +30,7 @@ namespace _22520085_VoDucAnh
 
         private void button5_Click(object sender, EventArgs e)
         {
+            // Xóa nội dung của các control: richTextBox1, richTextBox2, pictureBox1, listView1
             richTextBox1.Clear();
             richTextBox2.Clear();
             pictureBox1.Image = null;
@@ -38,51 +39,55 @@ namespace _22520085_VoDucAnh
 
         private void button1_Click(object sender, EventArgs e)
         {
+            // Mở hộp thoại chọn file
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Text Files|*.txt";
             openFileDialog.Title = "Chọn tệp dữ liệu";
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)// Nếu người dùng chọn file và nhấn OK
             {
                 selectedFilePath = openFileDialog.FileName;
-                ReadAndInsertData(selectedFilePath);
+                ReadAndInsertData(selectedFilePath); // Đọc và chèn dữ liệu từ file vào cơ sở dữ liệu
             }
             else
             {
-                MessageBox.Show("Bạn đã hủy chọn file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Bạn đã hủy chọn file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);// Hiển thị thông báo khi người dùng hủy chọn file
             }
-            ShowDataOnListView();
+            ShowDataOnListView();// Hiển thị dữ liệu trên ListView
         }
         private void ReadAndInsertData(string filePath)
         {
+            // Mở kết nối tới cơ sở dữ liệu SQLite
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=food_database.db;Version=3;"))
             {
                 connection.Open();
 
+                // Mở StreamReader để đọc từ file
                 using (StreamReader sr = new StreamReader(filePath))
                 {
                     string line;
                     bool isMonAnSection = false;
                     bool isNguoiDungSection = false;
 
+                    // Đọc từng dòng trong file
                     while ((line = sr.ReadLine()) != null)
                     {
-                        if (line.StartsWith("# MonAn"))
+                        if (line.StartsWith("# MonAn"))// Xác định dòng có phải là phần "# MonAn"
                         {
                             isMonAnSection = true;
                             isNguoiDungSection = false;
                             continue;
                         }
-                        else if (line.StartsWith("# NguoiDung"))
+                        else if (line.StartsWith("# NguoiDung"))// Xác định dòng có phải là phần "# NguoiDung"
                         {
                             isMonAnSection = false;
                             isNguoiDungSection = true;
                             continue;
                         }
-                        else if (line.Trim() != "")
+                        else if (line.Trim() != "") // Xử lý các dòng chứa dữ liệu món ăn hoặc người dùng
                         {
                             string[] fields = line.Split(',');
 
-                            if (isMonAnSection && fields.Length == 4)
+                            if (isMonAnSection && fields.Length == 4)// Nếu đang ở phần mô tả món ăn và dòng có đúng 4 trường
                             {
                                 using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO MonAn (IDMA, TenMonAn, HinhAnh, IDNCC) VALUES (@id, @name, @image, @contributorId)", connection))
                                 {
@@ -93,7 +98,7 @@ namespace _22520085_VoDucAnh
                                     cmd.ExecuteNonQuery();
                                 }
                             }
-                            else if (isNguoiDungSection && fields.Length == 3)
+                            else if (isNguoiDungSection && fields.Length == 3)// Nếu đang ở phần mô tả người dùng và dòng có đúng 3 tr
                             {
                                 using (SQLiteCommand cmd = new SQLiteCommand("INSERT INTO NguoiDung (IDNCC, HoVaTen, QuyenHan) VALUES (@id, @name, @role)", connection))
                                 {
@@ -103,7 +108,7 @@ namespace _22520085_VoDucAnh
                                     cmd.ExecuteNonQuery();
                                 }
                             }
-                            else
+                            else // Nếu dòng không phù hợp với cấu trúc của bảng MonAn hoặc NguoiDung
                             {
                                 MessageBox.Show("Nội dung của tệp không tương thích với cấu trúc của bảng MonAn và NguoiDung.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 listView1 = null;
@@ -117,13 +122,16 @@ namespace _22520085_VoDucAnh
         }
         private void ShowDataOnListView()
         {
+            // Mở kết nối tới cơ sở dữ liệu SQLite
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=food_database.db;Version=3;"))
             {
                 connection.Open();
+                // Thực hiện truy vấn để lấy dữ liệu từ bảng MonAn
                 using (SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM MonAn", connection))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
+                        // Đọc từng dòng dữ liệu và hiển thị lên ListView
                         while (reader.Read())
                         {
                             ListViewItem item = new ListViewItem(reader["TenMonAn"].ToString());
@@ -133,14 +141,16 @@ namespace _22520085_VoDucAnh
                         }
                     }
                 }
-                connection.Close();
+                connection.Close();// Đóng kết nối tới cơ sở dữ liệu
             }
         }
         private void ShowRandomFoodInfo()
         {
+            // Mở kết nối tới cơ sở dữ liệu SQLite
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=food_database.db;Version=3;"))
             {
                 connection.Open();
+                // Thực hiện truy vấn để lấy thông tin một món ăn ngẫu nhiên kèm theo thông tin người dùng đã đóng góp
                 using (SQLiteCommand cmd = new SQLiteCommand("SELECT MonAn.TenMonAn, MonAn.HinhAnh, NguoiDung.HoVaTen " +
                                                               "FROM MonAn " +
                                                               "INNER JOIN NguoiDung ON MonAn.IDNCC = NguoiDung.IDNCC " +
@@ -150,6 +160,7 @@ namespace _22520085_VoDucAnh
                     {
                         if (reader.Read())
                         {
+                            // Đọc dữ liệu và hiển thị lên các control trên form
                             string foodName = reader["TenMonAn"].ToString();
                             string imageName = reader["HinhAnh"].ToString();
                             string contributorName = reader["HoVaTen"].ToString();
@@ -175,11 +186,13 @@ namespace _22520085_VoDucAnh
             }
         }
 
-
+        //Chọn ngẫu nhiên các món ăn
         private void button3_Click(object sender, EventArgs e)
         {
             ShowRandomFoodInfo();
-        }
+        }  
+
+        // Phương thức tạo các bảng trong cơ sở dữ liệu
         private void CreateTables()
         {
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=food_database.db;Version=3;"))
@@ -208,6 +221,8 @@ namespace _22520085_VoDucAnh
                 connection.Close();
             }
         }
+
+        // Phương thức xóa các bảng trong cơ sở dữ liệu
         private void DeleteTables()
         {
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=food_database.db;Version=3;"))

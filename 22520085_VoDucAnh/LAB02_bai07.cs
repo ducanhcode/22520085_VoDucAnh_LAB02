@@ -17,10 +17,14 @@ namespace _22520085_VoDucAnh
         {
             InitializeComponent();
         }
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            InitTree();
+            InitTree();// Gọi phương thức InitTree để khởi tạo cây thư mục
         }
+
+        // Phương thức khởi tạo cây thư mục
         private void InitTree()
         {
             string[] drives = Directory.GetLogicalDrives();
@@ -33,57 +37,63 @@ namespace _22520085_VoDucAnh
             }
         }
 
+        // Phương thức được gọi trước khi một node trong treeView1 được mở ra
         private void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
-            TreeNode node = e.Node;
-            node.Nodes.Clear();
-            string[] items = Directory.GetFileSystemEntries(node.FullPath);
+            TreeNode node = e.Node;  // Lấy node được mở ra
+            node.Nodes.Clear();  // Xóa các node con của node hiện tại
+            string[] items = Directory.GetFileSystemEntries(node.FullPath); // Lấy danh sách các thư mục và tệp tin trong đường dẫn của node hiện tại
 
-            foreach (string item in items)
+
+            foreach (string item in items) // Kiểm tra nếu đối tượng là một tệp tin
             {
                 if (File.Exists(item))
                 {
-                    string extension = Path.GetExtension(item).ToLower();
+                    string extension = Path.GetExtension(item).ToLower(); // Lấy phần mở rộng của tệp tin
+
+                    // Kiểm tra nếu phần mở rộng là .png, .jpg hoặc .jpeg, thêm node cho tệp tin vào cây
                     if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
                     {
                         TreeNode n = node.Nodes.Add(Path.GetFileName(item));
                     }
+
+                    // Kiểm tra nếu phần mở rộng là .txt, thêm node cho tệp tin vào cây
                     else if (extension == ".txt")
                     {
                         TreeNode n = node.Nodes.Add(Path.GetFileName(item));
                     }
                 }
-                else if (Directory.Exists(item))
+                else if (Directory.Exists(item)) // Kiểm tra nếu đối tượng là một thư mục
                 {
-                    TreeNode n = node.Nodes.Add(Path.GetFileName(item));
-                    n.Nodes.Add("Tam");
+                    TreeNode n = node.Nodes.Add(Path.GetFileName(item)); // Thêm node cho thư mục vào cây
+                    n.Nodes.Add("Tam"); // Thêm một node tạm vào node thư mục vừa thêm
                 }
             }
         }
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            TreeNode selectedNode = e.Node;
-            string filePath = selectedNode.FullPath;
+            TreeNode selectedNode = e.Node; // Lấy node được chọn
+            string filePath = selectedNode.FullPath; // Lấy đường dẫn của node được chọn
 
-            if (File.Exists(filePath))
+            if (File.Exists(filePath)) // Kiểm tra nếu đường dẫn là một tệp tin
             {
-                string extension = Path.GetExtension(filePath).ToLower();
+                string extension = Path.GetExtension(filePath).ToLower(); // Lấy phần mở rộng của tệp tin
 
-                if (extension == ".txt")
+                if (extension == ".txt") // Nếu phần mở rộng là .txt, hiển thị nội dung của tệp tin vào textBox1
                 {
                     string textContent = File.ReadAllText(filePath);
                     textBox1.Text = textContent;
                 }
-                else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg")
+                else if (extension == ".png" || extension == ".jpg" || extension == ".jpeg") // Nếu phần mở rộng là .png, .jpg hoặc .jpeg, hiển thị hình ảnh trong pictureBox1
                 {
                     try
                     {
-                        pictureBox1.Image = Image.FromFile(filePath);
-                        pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                        pictureBox1.Image = Image.FromFile(filePath); // Hiển thị hình ảnh từ tệp tin vào pictureBox1
+                        pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage; // Thiết lập chế độ hiển thị hình ảnh trong pictureBox1
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Không thể mở tệp ảnh: " + ex.Message);
+                        MessageBox.Show("Không thể mở tệp ảnh: " + ex.Message); // Hiển thị thông báo lỗi nếu không thể mở tệp ảnh
                     }
                 }
             }
