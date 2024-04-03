@@ -1,0 +1,27 @@
+Tên phim: ﻿MAI
+Giá vé: $100,000.00
+Tổng số lượng vé: 100
+Số lượng vé bán ra: 50
+Số lượng vé tồn: 50
+Tỉ lệ vé bán ra: 50.00%
+Doanh thu: $5,000,000.00
+Xếp hạng doanh thu: 1
+
+Tên phim: Kong
+Giá vé: $150,000.00
+Tổng số lượng vé: 50
+Số lượng vé bán ra: 50
+Số lượng vé tồn: 0
+Tỉ lệ vé bán ra: 100.00%
+Doanh thu: $7,500,000.00
+Xếp hạng doanh thu: 2
+
+Tên phim: Exuma 
+Giá vé: $120,000.00
+Tổng số lượng vé: 200
+Số lượng vé bán ra: 99
+Số lượng vé tồn: 101
+Tỉ lệ vé bán ra: 49.50%
+Doanh thu: $11,880,000.00
+Xếp hạng doanh thu: 3
+
